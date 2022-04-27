@@ -1,11 +1,13 @@
 // ==UserScript==
 // @name         阿里云盘搜索
 // @namespace    http://tampermonkey.net/
-// @version      1.0
-// @description  在阿里云盘（web端）集成一个资源搜索引擎
+// @version      1.1
+// @description  在阿里云盘（web端）集成一个资源搜索面板
 // @author       tutu辣么可爱
 // @match        *://*.aliyundrive.com/drive*
 // @license      MIT License
+// @note         1.0版本:发布首个版本
+// @note         1.1版本:(1)加入几个新搜索引擎和资源论坛;(2)样式优化
 // ==/UserScript==
 
 (function() {
@@ -120,11 +122,6 @@
 		}
 		return this;
 	}
-	HTMLElement.prototype.replace = function(dom) {
-		dom = this.insert(dom, "before");
-		this.remove();
-		return dom;
-	}
 	NodeList.prototype.hide = function() {
 		this.forEach((e, i) => {
 			e.hide();
@@ -139,7 +136,10 @@
 	var searchBase = {
 		"UP云搜": `https://www.upyunso.com/search.html?keyword={k}`,
 		"喵狸盘搜": `https://www.alipansou.com/search?k={k}`,
+		"鸡盒盘":"https://jihepan.com/search.php?q={k}",
 		"大盘搜": `https://aliyunso.cn/search?keyword={k}`,
+		"susu分享":"https://susuifa.com/?s={k}",
+		"yunpan1":"https://yunpan1.com/?q={k}",
 		"盘友社区": `https://www.panyoubbs.com/search.html?q={k}`,
 		"阿里云盘搜": `https://aliyunpanso.cn/?type=forum&s={k}`,
 		"云盘资源导航": `https://aliyun.panpanr.com`
@@ -176,7 +176,9 @@
 		"right": "0",
 		"top": "0",
 		"bottom": "0",
-		"margin": "auto"
+		"margin": "auto",
+		"box-shadow": "0 0 1px var(--divider_primary)",
+		"border": "1px solid var(--divider_secondary)"
 	})
 	var bar = $ele(`<div class="aliyunpan-searchTool-bar"></div>`).css({
 		"width": "calc(100% - 2em)",
