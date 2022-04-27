@@ -2,20 +2,23 @@
 
 在阿里云盘（web 端）添加一个资源搜索引擎。搜索引擎收集自互联网。
 
-## 搜索引擎列表
+## 搜索网站列表
 
-| 名称         | 网址                                |
-| ------------ | ----------------------------------- |
-| UP 云搜      | https://www.upyunso.com/search.html |
-| 喵狸盘搜     | https://www.alipansou.com           |
-| 大盘搜       | https://aliyunso.cn                 |
-| 盘友社区     | https://www.panyoubbs.com           |
-| 阿里云盘搜   | https://aliyunpanso.cn              |
-| 云盘资源导航 | https://aliyun.panpanr.com          |
+|     名称     |                网址                 |   类型   |
+| ------------ | ----------------------------------- | -------- |
+|    UP云搜    | https://www.upyunso.com/search.html | 搜索引擎 |
+|   喵狸盘搜   | https://www.alipansou.com           | 搜索引擎 |
+|    鸡盒盘    | https://jihepan.com/                | 搜索引擎 |
+|    大盘搜    | https://aliyunso.cn                 | 搜索引擎 |
+|   susu分享   | https://susuifa.com                 | 资源论坛 |
+|   yunpan1    | https://yunpan1.com                 | 资源论坛 |
+|   盘友社区   | https://www.panyoubbs.com           | 资源论坛 |
+|  阿里云盘搜  | https://aliyunpanso.cn              | 资源论坛 |
+| 云盘资源导航 | https://aliyun.panpanr.com          | 导航网站 |
 
 ## 使用手册
 
-* 打开 
+* 打开  
 点击左侧侧栏的“资源搜索”按钮或键盘按下“Shift+F”
 
 * 搜索  
