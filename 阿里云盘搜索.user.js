@@ -1,18 +1,19 @@
 // ==UserScript==
 // @name         阿里云盘搜索
 // @namespace    http://tampermonkey.net/
-// @version      1.2
+// @version      1.3
 // @description  在阿里云盘（web端）集成一个资源搜索面板
 // @author       tutu辣么可爱
 // @match        *://*.aliyundrive.com/drive*
 // @icon         https://gw.alicdn.com/imgextra/i3/O1CN01aj9rdD1GS0E8io11t_!!6000000000620-73-tps-16-16.ico
 // @require      https://greasyfork.org/scripts/444155-js-storedata/code/js-storeData.js?version=1045094
-// @require      https://greasyfork.org/scripts/444044-js-domextend/code/js-domExtend.js?version=1045325
+// @require      https://greasyfork.org/scripts/444044-js-domextend/code/js-domExtend.js?version=1054592
 // @license      MIT License
 // @grant        GM_registerMenuCommand
 // @note         1.0版本:发布首个版本
-// @note         1.1版本:(1)	新增几个搜索引擎和资源论坛;(2)样式优化;(3)增加一个脚本logo
+// @note         1.1版本:(1)新增几个搜索引擎和资源论坛;(2)样式优化;(3)增加一个脚本logo
 // @note         1.2版本:(1)新增搜索设置面板;(2)优化快捷键;(3)样式优化
+// @note         1.3版本:(1)大盘搜更换域名地址;(2)新增搜索引擎“毕方铺”聚合引擎;(3)修复重置bug并新增默认搜索引擎记忆功能
 // ==/UserScript==
 (function() {
 	$domExtendJS();
@@ -20,12 +21,16 @@
 		"UP云搜": `https://www.upyunso.com/search.html?keyword={k}`,
 		"喵狸盘搜": `https://www.alipansou.com/search?k={k}`,
 		"鸡盒盘": "https://jihepan.com/search.php?q={k}",
-		"大盘搜": `https://aliyunso.cn/search?keyword={k}`,
+		"大盘搜": `https://dapanso.com/search?keyword={k}`,
+		"毕方铺(聚合)": `https://www.iizhi.cn/resource/search/{k}`,
 		"susu分享": "https://susuifa.com/?s={k}",
 		"yunpan1": "https://yunpan1.com/?q={k}",
 		"盘友社区": `https://www.panyoubbs.com/search.html?q={k}`,
 		"阿里云盘搜": `https://aliyunpanso.cn/?type=forum&s={k}`,
 		"云盘资源导航": `https://aliyun.panpanr.com`
+	})
+	var settingBase = new storeDataJS("AliyundriveSearchJS-settingBase", {
+		"defaultEngine": "UP云搜"
 	})
 
 	function createBox() {
@@ -50,16 +55,22 @@
 			`</select><input type="text" placeholder="搜索内容" style="background: var(--background_tertiary); font-size: 14px; line-height: 1.5; font-weight: 500; width: calc(100% - 12em); height: 100%; border: 0px; outline: 0px; padding: 0px 1.2em"/><button style="background: var(--background_tertiary); font-size: 14px; line-height: 1.5; font-weight: 500; width: 4em; height: 100%; border: 0px; text-align: center; cursor: pointer">关闭</button>`;
 		$ele("#aliyunpan-searchTool").attr("tool-mode", "search");
 		$ele("#aliyunpan-searchTool .aliyunpan-searchTool-panel").css("height", "5em");
-		$ele("#aliyunpan-searchTool .aliyunpan-searchTool-bar").css("height", "2em").innerHTML = html;
+		$ele("#aliyunpan-searchTool .aliyunpan-searchTool-bar").css("height", "2em").eleHTML(html);
+		$ele("#aliyunpan-searchTool select").eleVal(settingBase.get("defaultEngine")).onchange = function() {
+			var k = this.value;
+			if (k && typeof k === "string") {
+				settingBase.set("defaultEngine", k, true);
+			}
+		}
 		$ele("#aliyunpan-searchTool input").onkeyup = function(evt) {
 			var button = $ele("button", this.parentElement);
-			button.innerText = this.value ? "搜索" : "关闭";
+			button.eleText(this.value ? "搜索" : "关闭");
 			if (evt.key === "Enter") {
 				button.click();
 			}
 		};
 		$ele("#aliyunpan-searchTool button").onclick = function() {
-			if (this.innerText === "关闭") {
+			if (this.eleText() === "关闭") {
 				switchSearch();
 			} else {
 				var url = searchBase.get($ele("#aliyunpan-searchTool select").value);
@@ -103,8 +114,7 @@
 			}
 		}
 		$ele("#aliyunpan-searchTool").attr("tool-mode", "setting");
-		$ele("#aliyunpan-searchTool .aliyunpan-searchTool-bar").innerHTML = "";
-		$ele("#aliyunpan-searchTool .aliyunpan-searchTool-bar").css("height", "100%").insert(item);
+		$ele("#aliyunpan-searchTool .aliyunpan-searchTool-bar").css("height", "100%").eleHTML("").insert(item);
 		$ele("#aliyunpan-searchTool .aliyunpan-searchTool-panel").css("height", "13em");
 	}
 
@@ -153,7 +163,8 @@
 				switchSearch();
 			} else if (evt.shiftKey && /s/i.test(evt.key)) {
 				switchSetting();
-			}else if (/escape/i.test(evt.key) && $ele("#aliyunpan-searchTool") && $ele("#aliyunpan-searchTool").css("display") !== "none") {
+			} else if (/escape/i.test(evt.key) && $ele("#aliyunpan-searchTool") && $ele("#aliyunpan-searchTool")
+				.css("display") !== "none") {
 				$ele("#aliyunpan-searchTool").click();
 			}
 		}
@@ -162,7 +173,7 @@
 		var btn = $ele("ul.nav-menu--1wQUw li")[0].cloneNode(true).attr("class", "nav-menu-item--2oDIG");
 		$ele("use", btn).setAttribute("xlink:href", "#PDSSearch");
 		$ele("ul.nav-menu--1wQUw").insert(btn);
-		btn.children[1].innerText = "资源搜索";
+		btn.findNode("#text").nodeValue = "资源搜索";
 		btn.onclick = function() {
 			switchSearch();
 		}
@@ -171,7 +182,9 @@
 	GM_registerMenuCommand("⚙️搜索设置面板", switchSetting, "s");
 	GM_registerMenuCommand("🛠️️还原脚本数据", function() {
 		if (confirm("是否初始化脚本，还原脚本数据？\n⚠️此操作不可逆，将删除此脚本所有用户数据！")) {
-			searchBase.reset()
+			searchBase.reset(true);
+			settingBase.reset(true);
+			$ele("#aliyunpan-searchTool").hide().attr("tool-mode", "")
 			alert("初始化脚本成功！\n还原脚本数据成功！\n请重新打开“资源搜索/搜索设置面板”")
 		}
 	}, "r");
