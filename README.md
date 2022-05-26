@@ -34,6 +34,7 @@
 |   喵狸盘搜   | https://www.alipansou.com           | 搜索引擎 |
 |    鸡盒盘    | https://jihepan.com/                | 搜索引擎 |
 |    大盘搜    | https://aliyunso.cn                 | 搜索引擎 |
+| 毕方铺(聚合) | https://www.iizhi.cn                | 搜索引擎 |
 |   susu分享   | https://susuifa.com                 | 资源论坛 |
 |   yunpan1    | https://yunpan1.com                 | 资源论坛 |
 |   盘友社区   | https://www.panyoubbs.com           | 资源论坛 |
@@ -44,6 +45,7 @@
 
 | 版本 | 内容 |
 | ---- | ---- |
+| 1.3 | (1)大盘搜更换域名地址<br>(2)新增搜索引擎“毕方铺”聚合引擎<br>(3)修复重置bug并新增默认搜索引擎记忆功能 |
 | 1.2 | (1)新增搜索设置面板<br>(2)优化快捷键<br>(3)样式优化 |
 | 1.1 | (1)加入几个新搜索引擎和资源论坛<br>(2)样式优化<br>(3)增加一个脚本logo |
 | 1.0 | 发布首个版本 |
