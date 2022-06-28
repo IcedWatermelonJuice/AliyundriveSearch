@@ -52,5 +52,5 @@
 
 ## 相关截图
 
-![屏幕截图 2022-06-28 132028](https://user-images.githubusercontent.com/87429695/176099410-d6b5ead4-6f18-4ba9-9fd7-b8c2dacff1b3.png)
-![屏幕截图 2022-06-28 132300](https://user-images.githubusercontent.com/87429695/176099420-379e7310-cff6-4568-8007-1342cc333998.png)
+![页面内截图](https://s3.bmp.ovh/imgs/2022/06/28/7e3cf890055fc6a0.png)
+![油猴内截图](https://s3.bmp.ovh/imgs/2022/06/28/c8c9458cf05b612f.png)
