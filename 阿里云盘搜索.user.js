@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         阿里云盘搜索
 // @namespace    http://tampermonkey.net/
-// @version      1.3
+// @version      1.4
 // @description  在阿里云盘（web端）集成一个资源搜索面板
 // @author       tutu辣么可爱
 // @match        *://*.aliyundrive.com/drive*
@@ -10,10 +10,12 @@
 // @require      https://greasyfork.org/scripts/444044-js-domextend/code/js-domExtend.js?version=1054592
 // @license      MIT License
 // @grant        GM_registerMenuCommand
+// @grant        GM_unregisterMenuCommand
 // @note         1.0版本:发布首个版本
 // @note         1.1版本:(1)新增几个搜索引擎和资源论坛;(2)样式优化;(3)增加一个脚本logo
 // @note         1.2版本:(1)新增搜索设置面板;(2)优化快捷键;(3)样式优化
 // @note         1.3版本:(1)大盘搜更换域名地址;(2)新增搜索引擎“毕方铺”聚合引擎;(3)修复重置bug并新增默认搜索引擎记忆功能
+// @note         1.4版本:(1)修复侧栏“资源搜索”按钮不可见问题
 // ==/UserScript==
 (function() {
 	$domExtendJS();
@@ -22,6 +24,7 @@
 		"喵狸盘搜": `https://www.alipansou.com/search?k={k}`,
 		"鸡盒盘": "https://jihepan.com/search.php?q={k}",
 		"大盘搜": `https://dapanso.com/search?keyword={k}`,
+		"找资源": `https://zhaoziyuan.me/so?filename={k}`,
 		"毕方铺(聚合)": `https://www.iizhi.cn/resource/search/{k}`,
 		"susu分享": "https://susuifa.com/?s={k}",
 		"yunpan1": "https://yunpan1.com/?q={k}",
@@ -30,7 +33,8 @@
 		"云盘资源导航": `https://aliyun.panpanr.com`
 	})
 	var settingBase = new storeDataJS("AliyundriveSearchJS-settingBase", {
-		"defaultEngine": "UP云搜"
+		"defaultEngine": "UP云搜",
+		"hotKeyEnable": true
 	})
 
 	function createBox() {
@@ -155,10 +159,17 @@
 			ele.show();
 		}
 	}
+	function switchHotKey(){
+		let old = settingBase.get("hotKeyEnable");
+		settingBase.set("hotKeyEnable", !old);
+		GM_unregisterMenuCommand(hotKeyRMC);
+		hotKeyRMC=GM_registerMenuCommand(`⌨️${old?"启用":"禁用"}快捷热键`, switchHotKey, "h");
+		alert(`快捷键已${old?"禁用":"启用"}`);
+	}
 	var saveFlag = false;
 	createBox();
 	$ele("body").onkeyup = function(evt) {
-		if (!/input|textarea/i.test(evt.target.tagName)) {
+		if (!/input|textarea/i.test(evt.target.tagName) && settingBase.get("hotKeyEnable")) {
 			if (evt.shiftKey && /f/i.test(evt.key)) {
 				switchSearch();
 			} else if (evt.shiftKey && /s/i.test(evt.key)) {
@@ -169,10 +180,10 @@
 			}
 		}
 	};
-	$eleFn("ul.nav-menu--1wQUw li").ready(() => {
-		var btn = $ele("ul.nav-menu--1wQUw li")[0].cloneNode(true).attr("class", "nav-menu-item--2oDIG");
+	$eleFn("ul.nav-menu--Lm1q6").ready(() => {
+		var btn = $ele("ul.nav-menu--Lm1q6 li")[0].cloneNode(true).attr("class", "nav-menu-item--Jz5IC");
 		$ele("use", btn).setAttribute("xlink:href", "#PDSSearch");
-		$ele("ul.nav-menu--1wQUw").insert(btn);
+		$ele("ul.nav-menu--Lm1q6").insert(btn);
 		btn.findNode("#text").nodeValue = "资源搜索";
 		btn.onclick = function() {
 			switchSearch();
@@ -188,4 +199,5 @@
 			alert("初始化脚本成功！\n还原脚本数据成功！\n请重新打开“资源搜索/搜索设置面板”")
 		}
 	}, "r");
+	var hotKeyRMC=GM_registerMenuCommand(`⌨️${settingBase.get("hotKeyEnable")?"禁用":"启用"}快捷热键`, switchHotKey, "h");
 })();
